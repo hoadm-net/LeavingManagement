@@ -2,14 +2,14 @@
 
 namespace App\Exports;
 
-use App\Models\Overtime;
+use App\Models\Leaving;
 use Carbon\Carbon;
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
-class OvertimeExport implements FromQuery, WithHeadings, WithMapping
+class TicketExport implements FromQuery, WithHeadings, WithMapping
 {
     use Exportable;
 
@@ -27,7 +27,7 @@ class OvertimeExport implements FromQuery, WithHeadings, WithMapping
     }
     public function query()
     {
-        $query = Overtime::query();
+        $query = Leaving::query();
 
         if ($this->begin) {
             $query->whereDate('begin', '>=', $this->begin);
@@ -54,36 +54,29 @@ class OvertimeExport implements FromQuery, WithHeadings, WithMapping
             '#',
             'Full Name',
             'Email',
-            'Department',
             'Shift',
-            'Start Time',
-            'End Time',
+            'Position',
+            'Department',
+            'Time for leave',
+            'From',
+            'To',
             'Status',
-            'Job Description',
-            'Company Bus'
         ];
     }
 
-    public function get_bus($bus) {
-        if ($bus) {
-            return "Yes";
-        }
-
-        return "No";
-    }
-    public function map($ot): array
+    public function map($ticket): array
     {
         return [
-            $ot->id,
-            $ot->name,
-            $ot->email,
-            $ot->department->name,
-            $ot->shift,
-            Carbon::createFromFormat('Y-m-d H:i:s', $ot->begin)->format('d-m-Y H:i'),
-            Carbon::createFromFormat('Y-m-d H:i:s', $ot->end)->format('d-m-Y H:i'),
-            ucfirst($ot->status),
-            $ot->description,
-            $this->get_bus($ot->bus)
+            $ticket->id,
+            $ticket->full_name,
+            $ticket->email,
+            $ticket->shift,
+            $ticket->position,
+            $ticket->department->name,
+            $ticket->leave_days,
+            Carbon::createFromFormat('Y-m-d H:i:s', $ticket->from)->format('d-m-Y H:i'),
+            Carbon::createFromFormat('Y-m-d H:i:s', $ticket->to)->format('d-m-Y H:i'),
+            ucfirst($ticket->status),
         ];
     }
 }

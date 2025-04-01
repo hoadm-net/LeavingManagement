@@ -49,4 +49,8 @@ class Leaving extends Model
     public function lastLog() {
         return $this->hasOne(Log::class, 'leaving_id', 'id')->latest('created_at');
     }
+
+    public function lastNote() {
+        return $this->hasOne(HNote::class, 'leaving_id', 'id')->latest('created_at');
+    }
 }

@@ -85,7 +85,7 @@
 
                     @if (count($ticket->logs) > 0)
                         <h2 class="text-xl text-blue-500 mb-4">{{ __("Activity Logs") }}</h2>
-                        <table class="w-full">
+                        <table class="w-full mb-6">
                             <thead class="border-b-2 font-bold">
                             <tr>
                                 <td>#</td>
@@ -108,6 +108,26 @@
                             </tbody>
                         </table>
                     @endif
+
+                    @if ($ticket->lastNote)
+                        <h2 class="text-xl text-blue-500 mb-4">{{ __("HR Notes") }}</h2>
+                        <ul class="list-disc pl-4 mb-6">
+                            <li><span class="font-semibold">Total annual leave in {{ $ticket->lastNote->year }}</span>: {{ $ticket->lastNote->total_days }} days</li>
+                            <li><span class="font-semibold">Already used until the application date (Include this time)</span>: {{ $ticket->lastNote->used_days }} days</li>
+                            <li><span class="font-semibold">Remaining leave days</span>: {{ $ticket->lastNote->remaining_days }} days</li>
+                            <li><span class="font-semibold">Notes</span>: {{ $ticket->lastNote->notes }}</li>
+                        </ul>
+
+                    @endif
+
+
+
+                    <button
+                        class="bg-blue-500 text-white font-bold py-2 px-4 rounded-lg
+               hover:bg-blue-600 hover:scale-105 transition
+               active:bg-blue-700 active:scale-95"
+                        onclick="Livewire.dispatch('openModal', { component: 'hr-note', arguments: { tid: {{ $ticket->id }} }})"
+                    >HR Note</button>
                 </div>
             </div>
         </div>

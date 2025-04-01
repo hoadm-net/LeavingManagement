@@ -11,11 +11,13 @@ class HNote extends Model
     protected $table = 'hr_notes';
 
     protected $fillable = [
+        'leaving_id',
         'user_id',
         'year',
         'total_days',
         'used_days',
         'remaining_days',
+        'notes'
     ];
 
 

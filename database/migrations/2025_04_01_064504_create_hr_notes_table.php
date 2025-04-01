@@ -13,15 +13,15 @@ return new class extends Migration
     {
         Schema::create('hr_notes', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('leaving_id')->constrained('leavings')->onDelete('cascade');
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->integer('year');
-            $table->unsignedBigInteger('user_id'); // Gắn với nhân viên
-            $table->integer('total_days'); // Tổng số ngày phép năm
-            $table->integer('used_days'); // Số ngày đã sử dụng
-            $table->integer('remaining_days'); // Số ngày còn lại
+            $table->integer('total_days');
+            $table->integer('used_days');
+            $table->integer('remaining_days');
+            $table->string('notes')->nullable();
 
             $table->timestamps();
-
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 
