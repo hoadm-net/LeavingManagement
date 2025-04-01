@@ -2,6 +2,7 @@
 
 namespace App\Mail;
 
+use App\Models\Leaving;
 use App\Models\Overtime;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -14,18 +15,18 @@ class AdminApproved extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $overtime;
+    public $ticket;
     public $admin;
     /**
      * Create a new message instance.
      */
-    public function __construct(Overtime $overtime)
+    public function __construct(Leaving $ticket)
     {
         //
         $this->afterCommit();
-        $this->overtime = $overtime;
+        $this->ticket = $ticket;
 
-        $lastLog = $overtime->lastLog;
+        $lastLog = $ticket->lastLog;
         $this->admin = $lastLog ? $lastLog->user : null;
     }
 
@@ -54,13 +55,31 @@ class AdminApproved extends Mailable
         return new Content(
             view: 'mail.approval-request',
             with: [
-                'Name' => $this->overtime->name,
-                'Department'=> $this->overtime->department->name,
-                'Shift' => $this->overtime->shift,
-                'Start' => date('d-m-Y H:i', strtotime($this->overtime->begin)),
-                'End' => date('d-m-Y H:i', strtotime($this->overtime->end)),
-                'Description' => $this->overtime->description,
-                'Bus' => $this->overtime->bus ? "Yes" : "No",
+                'full_name' => $this->ticket->full_name,
+                'email' => $this->ticket->email,
+                'position' => $this->ticket->position,
+                'shift' => $this->ticket->shift,
+                'department'=> $this->ticket->department->name,
+                'leave_days' => $this->ticket->leave_days,
+                'from' => date('d-m-Y H:i', strtotime($this->ticket->from)),
+                'to' => date('d-m-Y H:i', strtotime($this->ticket->to)),
+                'emergency_contact' => $this->ticket->emergency_contact,
+                'paid_leave' => $this->ticket->paid_leave,
+                'reason_company_pay'=> $this->ticket->reason_company_pay,
+                'child_under_12'=> $this->ticket->child_under_12,
+                'self_marriage'=> $this->ticket->self_marriage,
+                'child_marriage'=> $this->ticket->child_marriage,
+                'grand_funeral'=> $this->ticket->grand_funeral,
+                'parent_funeral'=> $this->ticket->parent_funeral,
+                'pregnancy_check'=> $this->ticket->pregnancy_check,
+                'maternity_leave'=> $this->ticket->maternity_leave,
+                'paternity_leave'=> $this->ticket->paternity_leave,
+                'other_insurance_leave'=> $this->ticket->other_insurance_leave,
+                'reason_insurance'=> $this->ticket->reason_insurance,
+                'sick_leave'=> $this->ticket->sick_leave,
+                'child_sick_leave'=> $this->ticket->child_sick_leave,
+                'unpaid_reason'=> $this->ticket->unpaid_reason,
+
                 'Status' => $status,
                 'Style' => $style,
             ]

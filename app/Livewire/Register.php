@@ -4,35 +4,67 @@ namespace App\Livewire;
 
 use App\Mail\RequestCreated;
 use App\Models\Department;
-use App\Models\Overtime;
-use App\Models\User;
+use App\Models\Leaving;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Mail;
 use Livewire\Component;
 
 class Register extends Component
 {
-    public $name;
+    public $full_name;
     public $email;
-    public $department;
-    public $begin;
-    public $end;
-    public $description;
-    public $urgent = false;
-    public $bus = false;
+    public $position;
     public $shift;
+    public $department_id;
+    public $leave_days;
+    public $from;
+    public $to;
 
+    public $paid_leave = 0;
+    public $reason_company_pay;
+    public $child_under_12 = 0;
+
+    public $self_marriage = 0;
+    public $child_marriage = 0;
+    public $grand_funeral = 0;
+    public $parent_funeral = 0;
+
+    public $pregnancy_check = 0;
+    public $maternity_leave = 0;
+    public $paternity_leave = 0;
+    public $other_insurance_leave = 0;
+    public $reason_insurance;
+    public $sick_leave = 0;
+    public $child_sick_leave = 0;
+
+    public $unpaid_reason;
+    public $emergency_contact;
 
     protected $rules = [
-        'name' => 'required',
-        'email' => 'required|email',
-        'department' => 'required',
-        'begin' => 'required',
-        'end' => 'required|after:begin',
-        'description' => 'nullable',
-        'urgent' => 'required',
-        'bus' => 'required',
-        'shift' => 'nullable'
+        'full_name' => 'required|string|max:255',
+        'email' => 'nullable|string|email|max:255',
+        'position' => 'required|string|max:255',
+        'shift' => 'nullable|string|max:100',
+        'department_id' => 'required|exists:departments,id',
+        'leave_days' => 'required|integer|min:1',
+        'from' => 'required|date',
+        'to' => 'required|date|after:from',
+        'paid_leave' => 'nullable|integer|min:0',
+        'reason_company_pay' => 'nullable|string',
+        'child_under_12' => 'nullable|integer|min:0',
+        'self_marriage' => 'nullable|integer|min:0',
+        'child_marriage' => 'nullable|integer|min:0',
+        'grand_funeral' => 'nullable|integer|min:0',
+        'parent_funeral' => 'nullable|integer|min:0',
+        'pregnancy_check' => 'nullable|integer|min:0',
+        'maternity_leave' => 'nullable|integer|min:0',
+        'paternity_leave' => 'nullable|integer|min:0',
+        'other_insurance_leave' => 'nullable|integer|min:0',
+        'reason_insurance' => 'nullable|string',
+        'sick_leave' => 'nullable|integer|min:0',
+        'child_sick_leave' => 'nullable|integer|min:0',
+        'unpaid_reason' => 'nullable|string',
+        'emergency_contact' => 'required|string|min:8',
     ];
 
     public function render()
@@ -43,50 +75,51 @@ class Register extends Component
     }
 
     public function submit() {
-
         $this->validate();
 
-        $formattedBegin = Carbon::createFromFormat('d-m-Y H:i', $this->begin)->format('Y-m-d H:i:s');
-        $formattedEnd = Carbon::createFromFormat('d-m-Y H:i', $this->end)->format('Y-m-d H:i:s');
+        $formattedBegin = Carbon::createFromFormat('d-m-Y H:i', $this->from)->format('Y-m-d H:i:s');
+        $formattedEnd = Carbon::createFromFormat('d-m-Y H:i', $this->to)->format('Y-m-d H:i:s');
 
-        $dep = Department::find($this->department);
-        $current_manager = 1;
-        if ($this->urgent) {
-            $current_manager = $dep->max_level;
-        }
-        $staffs = explode(PHP_EOL, $this->name);
+        $leaving = Leaving::create([
+            'full_name' => $this->full_name,
+            'email' => $this->email,
+            'position' => $this->position,
+            'shift' => $this->shift,
+            'department_id' => $this->department_id,
+            'leave_days' => $this->leave_days,
+            'from' => $formattedBegin,
+            'to' => $formattedEnd,
+            'paid_leave' => $this->paid_leave,
+            'reason_company_pay' => $this->reason_company_pay,
+            'child_under_12' => $this->child_under_12,
+            'self_marriage' => $this->self_marriage,
+            'child_marriage' => $this->child_marriage,
+            'grand_funeral' => $this->grand_funeral,
+            'parent_funeral' => $this->parent_funeral,
+            'pregnancy_check' => $this->pregnancy_check,
+            'maternity_leave' => $this->maternity_leave,
+            'paternity_leave' => $this->paternity_leave,
+            'other_insurance_leave' => $this->other_insurance_leave,
+            'reason_insurance' => $this->reason_insurance,
+            'sick_leave' => $this->sick_leave,
+            'child_sick_leave' => $this->child_sick_leave,
+            'unpaid_reason' => $this->unpaid_reason,
+            'emergency_contact' => $this->emergency_contact,
+            'current_manager' => 1
+        ]);
 
-        foreach ($staffs as $staff) {
-            $staff = trim($staff);
-            if (! empty($staff)) {
-                $overtime = Overtime::create([
-                    'name' => mb_convert_case($staff, MB_CASE_TITLE, "UTF-8"),
-                    'email' => $this->email,
-                    'department_id' => $this->department,
-                    'begin' => $formattedBegin,
-                    'end' => $formattedEnd,
-                    'description' => $this->description,
-                    'status' => 'pending',
-                    'bus' => $this->bus,
-                    'shift' => $this->shift,
-                    'current_manager' => $current_manager
-                ]);
-            }
-        }
+        $dep = Department::find($this->department_id);
 
         foreach ($dep->users as $manager) {
             if (!$manager->isActive()) {
                 continue;
             }
 
-            if ($manager->pivot->level == $current_manager) {
-                Mail::to($manager->email)->send(new RequestCreated($overtime));
+            if ($manager->pivot->level == 1) {
+                Mail::to($manager->email)->send(new RequestCreated($leaving));
             }
-
         }
 
         return redirect('thanks');
     }
-
-
 }

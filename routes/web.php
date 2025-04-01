@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\OvertimeController;
+use App\Http\Controllers\TicketController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\CheckRole;
 use \App\Http\Controllers\UserController;
@@ -41,5 +41,13 @@ Route::get('statistics', [StatisticController::class, 'index'])
 Route::view('profile', 'profile')
     ->middleware(['auth'])
     ->name('profile');
+
+Route::get('view-ticket/{id}', [TicketController::class, 'view'])
+    ->middleware(['auth'])
+    ->name('view-ticket');
+
+Route::get('show-ticket/{id}', [TicketController::class, 'show'])
+    ->middleware(['auth'])
+    ->name('show-ticket');
 
 require __DIR__.'/auth.php';
