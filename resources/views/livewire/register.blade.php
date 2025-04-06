@@ -100,7 +100,7 @@
                     {{ __('From') }}
                     <input
                         wire:model="from"
-                        type="datetime-local"
+                        type="text"
                         id="from"
                         class="hw-dt mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                         required>
@@ -114,7 +114,7 @@
                     {{ __('To') }}
                     <input
                         wire:model="to"
-                        type="datetime-local"
+                        type="text"
                         id="to"
                         class="hw-dt mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                         required>

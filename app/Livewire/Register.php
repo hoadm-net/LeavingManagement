@@ -7,6 +7,7 @@ use App\Models\Department;
 use App\Models\Leaving;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Validation\ValidationException;
 use Livewire\Component;
 
 class Register extends Component
@@ -75,51 +76,60 @@ class Register extends Component
     }
 
     public function submit() {
-        $this->validate();
+        try {
+            $this->validate();
 
-        $formattedBegin = Carbon::createFromFormat('d-m-Y H:i', $this->from)->format('Y-m-d H:i:s');
-        $formattedEnd = Carbon::createFromFormat('d-m-Y H:i', $this->to)->format('Y-m-d H:i:s');
+            $formattedBegin = Carbon::createFromFormat('d-m-Y H:i', $this->from)->format('Y-m-d H:i:s');
+            $formattedEnd = Carbon::createFromFormat('d-m-Y H:i', $this->to)->format('Y-m-d H:i:s');
 
-        $leaving = Leaving::create([
-            'full_name' => $this->full_name,
-            'email' => $this->email,
-            'position' => $this->position,
-            'shift' => $this->shift,
-            'department_id' => $this->department_id,
-            'leave_days' => $this->leave_days,
-            'from' => $formattedBegin,
-            'to' => $formattedEnd,
-            'paid_leave' => $this->paid_leave,
-            'reason_company_pay' => $this->reason_company_pay,
-            'child_under_12' => $this->child_under_12,
-            'self_marriage' => $this->self_marriage,
-            'child_marriage' => $this->child_marriage,
-            'grand_funeral' => $this->grand_funeral,
-            'parent_funeral' => $this->parent_funeral,
-            'pregnancy_check' => $this->pregnancy_check,
-            'maternity_leave' => $this->maternity_leave,
-            'paternity_leave' => $this->paternity_leave,
-            'other_insurance_leave' => $this->other_insurance_leave,
-            'reason_insurance' => $this->reason_insurance,
-            'sick_leave' => $this->sick_leave,
-            'child_sick_leave' => $this->child_sick_leave,
-            'unpaid_reason' => $this->unpaid_reason,
-            'emergency_contact' => $this->emergency_contact,
-            'current_manager' => 1
-        ]);
+            $leaving = Leaving::create([
+                'full_name' => $this->full_name,
+                'email' => $this->email,
+                'position' => $this->position,
+                'shift' => $this->shift,
+                'department_id' => $this->department_id,
+                'leave_days' => $this->leave_days,
+                'from' => $formattedBegin,
+                'to' => $formattedEnd,
+                'paid_leave' => $this->paid_leave,
+                'reason_company_pay' => $this->reason_company_pay,
+                'child_under_12' => $this->child_under_12,
+                'self_marriage' => $this->self_marriage,
+                'child_marriage' => $this->child_marriage,
+                'grand_funeral' => $this->grand_funeral,
+                'parent_funeral' => $this->parent_funeral,
+                'pregnancy_check' => $this->pregnancy_check,
+                'maternity_leave' => $this->maternity_leave,
+                'paternity_leave' => $this->paternity_leave,
+                'other_insurance_leave' => $this->other_insurance_leave,
+                'reason_insurance' => $this->reason_insurance,
+                'sick_leave' => $this->sick_leave,
+                'child_sick_leave' => $this->child_sick_leave,
+                'unpaid_reason' => $this->unpaid_reason,
+                'emergency_contact' => $this->emergency_contact,
+                'current_manager' => 1
+            ]);
 
-        $dep = Department::find($this->department_id);
+            $dep = Department::find($this->department_id);
 
-        foreach ($dep->users as $manager) {
-            if (!$manager->isActive()) {
-                continue;
+            foreach ($dep->users as $manager) {
+                if (!$manager->isActive()) {
+                    continue;
+                }
+
+                if ($manager->pivot->level == 1) {
+                    Mail::to($manager->email)->send(new RequestCreated($leaving));
+                }
             }
 
-            if ($manager->pivot->level == 1) {
-                Mail::to($manager->email)->send(new RequestCreated($leaving));
-            }
+            return redirect('thanks');
+        } catch (ValidationException $e) {
+            $today = now()->format('d-m-Y H:i');
+            $this->from = $today;
+            $this->to = $today;
+
+            // Để Livewire tiếp tục hiển thị lỗi
+            throw $e;
         }
-
-        return redirect('thanks');
     }
 }
