@@ -79,6 +79,7 @@ class AdminApproved extends Mailable
                 'sick_leave'=> $this->ticket->sick_leave,
                 'child_sick_leave'=> $this->ticket->child_sick_leave,
                 'unpaid_reason'=> $this->ticket->unpaid_reason,
+                'file_name' => $this->ticket->file_name,
 
                 'Status' => $status,
                 'Style' => $style,

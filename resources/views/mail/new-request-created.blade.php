@@ -11,6 +11,10 @@
         <li>Estimated time for leave: {{ $leave_days }}</li>
         <li>From: {{ $from }}</li>
         <li>To: {{ $to }}</li>
+
+        @if($file_name)
+            <li style="color: red;">Please check the attached file.</li>
+        @endif
     </ul>
 
     <div style="margin-top: 20px;">

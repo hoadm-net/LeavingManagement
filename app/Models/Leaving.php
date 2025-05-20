@@ -33,7 +33,8 @@ class Leaving extends Model
         'child_sick_leave',
         'unpaid_reason',
         'emergency_contact',
-        'current_manager'
+        'current_manager',
+        'file_name'
     ];
 
 

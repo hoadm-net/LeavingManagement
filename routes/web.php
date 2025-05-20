@@ -10,6 +10,7 @@ use \App\Http\Controllers\StatisticController;
 
 
 Route::view('/', 'welcome')->name('index');
+Route::view('/bulk-registration', 'bulk-registration')->name('bulk-registration');
 
 Route::get('thanks', [ThanksController::class, 'index'])
     ->name('thanks');

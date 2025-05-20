@@ -1,5 +1,5 @@
 <div class="grid lg:grid-cols-1">
-    <form wire:submit="submit" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 space-y-6">
+    <form wire:submit.prevent="submit" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 space-y-6">
         <!-- Section 1: Basic Info -->
         <div class="mb-4">
             <label class="block text-black">
@@ -294,8 +294,15 @@
 
         <!-- Submit -->
         <div class="flex items-center justify-between">
-            <button type="submit" wire:loading.attr="disabled" class="w-full bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-                Submit
+            <button
+                type="submit"
+                class="w-full bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                wire:target="submit"
+                wire:loading.attr="disabled"
+                wire:loading.class="opacity-50"
+            >
+                <span wire:loading.remove wire:target="submit">{{ __("Submit") }}</span>
+                <span wire:loading wire:target="submit">{{ __("Processing....") }}</span>
             </button>
         </div>
 

@@ -1,6 +1,6 @@
 <div class="grid lg:grid-cols-1">
     <form
-        wire:submit="submit"
+        wire:submit.prevent="save"
         class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
 
         <div class="mb-4">
@@ -85,9 +85,13 @@
             <button
                 class="w-full bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                 type="submit"
+                wire:target="save"
                 wire:loading.attr="disabled"
+                wire:loading.class="opacity-50"
             >
-                {{ __("Submit") }}
+
+                <span wire:loading.remove wire:target="save">{{ __("Submit") }}</span>
+                <span wire:loading wire:target="save">{{ __("Processing....") }}</span>
             </button>
         </div>
     </form>

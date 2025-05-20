@@ -6,6 +6,7 @@ use App\Mail\RequestCreated;
 use App\Models\Department;
 use App\Models\Leaving;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\ValidationException;
 use Livewire\Component;
@@ -76,6 +77,17 @@ class Register extends Component
     }
 
     public function submit() {
+        $userKey = 'submit_lock_' . request()->ip(); // nếu có login thì dùng auth()->id()
+
+        if (Cache::has($userKey)) {
+            $this->addError('submit', 'Vui lòng đợi vài giây trước khi thử lại.');
+            return;
+        }
+
+        // Đặt khóa trong 5 giây
+        Cache::put($userKey, true, now()->addSeconds(5));
+
+
         try {
             $this->validate();
 

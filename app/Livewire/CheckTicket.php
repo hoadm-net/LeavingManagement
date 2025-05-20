@@ -8,6 +8,7 @@ use App\Mail\RequestRejected;
 use App\Models\Leaving;
 use App\Models\Log;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Mail;
 use LivewireUI\Modal\ModalComponent;
 
@@ -19,6 +20,8 @@ class CheckTicket extends ModalComponent
 
     public function render()
     {
+
+
         $ticket = Leaving::findOrFail($this->tid);
         return view('livewire.check-ticket',
             [
@@ -32,6 +35,17 @@ class CheckTicket extends ModalComponent
     }
 
     public function approve() {
+        $userKey = 'submit_lock_' . request()->ip(); // nếu có login thì dùng auth()->id()
+
+        if (Cache::has($userKey)) {
+            $this->addError('submit', 'Vui lòng đợi vài giây trước khi thử lại.');
+            return;
+        }
+
+        // Đặt khóa trong 5 giây
+        Cache::put($userKey, true, now()->addSeconds(5));
+
+
         if ($this->isProcessing) {
             return true;
         } else {
