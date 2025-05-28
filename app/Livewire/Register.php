@@ -48,10 +48,10 @@ class Register extends Component
         'position' => 'required|string|max:255',
         'shift' => 'nullable|string|max:100',
         'department_id' => 'required|exists:departments,id',
-        'leave_days' => 'required|integer|min:1',
+        'leave_days' => 'required|numeric|min:0.25',
         'from' => 'required|date',
         'to' => 'required|date|after:from',
-        'paid_leave' => 'nullable|integer|min:0',
+        'paid_leave' => 'nullable|numeric|min:0.25',
         'reason_company_pay' => 'nullable|string',
         'child_under_12' => 'nullable|integer|min:0',
         'self_marriage' => 'nullable|integer|min:0',
@@ -68,6 +68,7 @@ class Register extends Component
         'unpaid_reason' => 'nullable|string',
         'emergency_contact' => 'required|string|min:8',
     ];
+
 
     public function render()
     {
@@ -90,6 +91,11 @@ class Register extends Component
 
         try {
             $this->validate();
+
+            if (fmod($this->paid_leave, 0.25) !== 0.0) {
+                $this->addError('leave_days', 'The value must be a multiple of 0.25');
+                return;
+            }
 
             $formattedBegin = Carbon::createFromFormat('d-m-Y H:i', $this->from)->format('Y-m-d H:i:s');
             $formattedEnd = Carbon::createFromFormat('d-m-Y H:i', $this->to)->format('Y-m-d H:i:s');

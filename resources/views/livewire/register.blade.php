@@ -85,7 +85,8 @@
                 <input
                     wire:model="leave_days"
                     type="number"
-                    min="1"
+                    min="0.25"
+                    step="0.25"
                     id="leaveDays"
                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                     required>
@@ -148,6 +149,8 @@
                     <input
                         wire:model="paid_leave"
                         type="number"
+                        min="0.25"
+                        step="0.25"
                         class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
                 </label>
                 @error('paid_leave') <span class="mt-2 text-sm text-red-600 dark:text-red-500">{{ $message }}</span> @enderror
