@@ -12,7 +12,7 @@
         <li>Position: {{ $position }}</li>
         <li>Shift: {{ $shift }}</li>
         <li>Department: {{ $department }}</li>
-        <li>Estimated time for leave: {{ $leave_days }}</li>
+        <li>Estimated time for leave: {{ $leave_days + 0 }} (days)</li>
         <li>From: {{ $from }}</li>
         <li>To: {{ $to }}</li>
     </ul>
@@ -21,7 +21,9 @@
         <h3>Company pay</h3>
         <table style="border: none;">
             <tr>
-                <td style="width: 50%;">@if($paid_leave) ✅ @else ❌ @endif Paid leave: {{ $paid_leave }} (days)</td>
+                <td style="width: 50%;">@if($paid_leave) ✅ @else ❌ @endif Paid leave: {{ $paid_leave + 0 }} (days)
+                    -  Unpaid leave: {{ $unpaid_leave + 0 }} (days)
+                </td>
                 <td>@if($self_marriage) ✅ @else ❌ @endif Marriage (03 days)</td>
             </tr>
             <tr>

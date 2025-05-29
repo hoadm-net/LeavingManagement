@@ -20,7 +20,7 @@
                     <td class="px-6 py-4">{{ $t->full_name }} ({{ $t->department->name }}) </td>
                     <td class="px-6 py-4">{{ $t->position }}</td>
                     <td class="px-6 py-4">{{ $t->shift }}</td>
-                    <td class="px-6 py-4">{{ $t->leave_days }}</td>
+                    <td class="px-6 py-4">{{ $t->leave_days + 0 }}</td>
                     <td class="px-6 py-4">{{ $t->from }}</td>
                     <td class="px-6 py-4">{{ $t->to }}</td>
                     <td class="px-6 py-4">

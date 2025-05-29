@@ -51,7 +51,7 @@ class Register extends Component
         'leave_days' => 'required|numeric|min:0.25',
         'from' => 'required|date',
         'to' => 'required|date|after:from',
-        'paid_leave' => 'nullable|numeric|min:0.25',
+        'paid_leave' => 'nullable|numeric|min:0',
         'reason_company_pay' => 'nullable|string',
         'child_under_12' => 'nullable|integer|min:0',
         'self_marriage' => 'nullable|integer|min:0',

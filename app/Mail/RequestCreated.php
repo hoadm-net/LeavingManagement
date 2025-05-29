@@ -53,6 +53,7 @@ class RequestCreated extends Mailable
                 'to' => date('d-m-Y H:i', strtotime($this->ticket->to)),
                 'emergency_contact' => $this->ticket->emergency_contact,
                 'paid_leave' => $this->ticket->paid_leave,
+                'unpaid_leave' => $this->ticket->leave_days - $this->ticket->paid_leave,
                 'reason_company_pay'=> $this->ticket->reason_company_pay,
                 'child_under_12'=> $this->ticket->child_under_12,
                 'self_marriage'=> $this->ticket->self_marriage,

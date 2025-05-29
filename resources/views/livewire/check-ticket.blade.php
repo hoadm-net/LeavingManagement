@@ -33,7 +33,7 @@
                     @endif
 
                     @if(!$ticket->file_name)
-                    <li>Estimated time for leave: {{ $ticket->leave_days }}</li>
+                    <li>Estimated time for leave: {{ $ticket->leave_days  + 0}} (days)</li>
                     <li>From: {{ $ticket->from }}</li>
                     <li>To: {{ $ticket->to }}</li>
                     @endif
@@ -43,7 +43,9 @@
                     <h3 class="text-lg text-black font-bold">Company pay</h3>
                     <table class="w-full">
                         <tr>
-                            <td style="width: 50%;">@if($ticket->paid_leave) ✅ @else ❌ @endif Paid leave: {{ $ticket->paid_leave }} (days)</td>
+                            <td style="width: 50%;">@if($ticket->paid_leave) ✅ @else ❌ @endif Paid leave: {{ $ticket->paid_leave  + 0}} (days)
+                                - Unpaid leave: {{ $ticket->leave_days - $ticket->paid_leave }} (days)
+                            </td>
                             <td>@if($ticket->self_marriage) ✅ @else ❌ @endif Marriage (03 days)</td>
                         </tr>
                         <tr>
