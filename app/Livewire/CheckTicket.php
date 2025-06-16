@@ -20,8 +20,6 @@ class CheckTicket extends ModalComponent
 
     public function render()
     {
-
-
         $ticket = Leaving::findOrFail($this->tid);
         return view('livewire.check-ticket',
             [
@@ -54,6 +52,19 @@ class CheckTicket extends ModalComponent
 
 
         $ticket = Leaving::findOrFail($this->tid);
+
+        $authorized = $ticket->department->users()
+            ->where('user_id', Auth::id())
+            ->wherePivot('level', $ticket->current_manager)
+            ->exists();
+
+        if (!$authorized) {
+            // Co nguoi xu ly roi
+//            $this->addError('unauthorized', 'Bạn không có quyền duyệt đơn này.');
+            $this->isProcessing = false;
+            return redirect()->route('dashboard');
+        }
+
         Log::create([
             'leaving_id' => $this->tid,
             'user_id' => Auth::id(),
