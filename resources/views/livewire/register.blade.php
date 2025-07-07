@@ -141,7 +141,7 @@
         </div>
 
         <!-- Collapsible Section: Company Pay -->
-        <details class="group border rounded-lg p-4 transition-all duration-300 overflow-hidden">
+        <details class="group border rounded-lg p-4 transition-all duration-300 overflow-hidden" open>
             <summary class=" font-semibold cursor-pointer text-xl group-open:text-blue-600">Company Pay</summary>
             <div class="mt-4 space-y-4">
                 <label class="block text-black">
