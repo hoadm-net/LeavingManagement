@@ -148,6 +148,7 @@
                     {{ __('Paid Leave') }} {{ __('(days)') }}
                     <input
                         wire:model="paid_leave"
+                        required
                         type="number"
                         min="0"
                         step="0.25"

@@ -22,7 +22,7 @@ class Register extends Component
     public $from;
     public $to;
 
-    public $paid_leave = 0;
+    public $paid_leave = null;
     public $reason_company_pay;
     public $child_under_12 = 0;
 
@@ -94,6 +94,11 @@ class Register extends Component
 
             if (fmod($this->paid_leave, 0.25) !== 0.0) {
                 $this->addError('leave_days', 'The value must be a multiple of 0.25');
+                return;
+            }
+
+            if (!is_null($this->paid_leave) && $this->paid_leave > $this->leave_days) {
+                $this->addError('paid_leave', 'The number of paid leave days must not exceed the total number of leave days.');
                 return;
             }
 
